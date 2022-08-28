@@ -2,10 +2,14 @@
 
 import 'dart:async';
 
+import 'package:badges/badges.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:musicplayer/class.dart';
+import 'package:musicplayer/size.dart';
 
 import 'music_methods/controller.dart';
+import 'music_methods/modeClass.dart';
 import 'music_methods/musicProvider.dart';
 
 class MusicPageTest extends ConsumerStatefulWidget {
@@ -24,9 +28,11 @@ class _MusicPageTestState extends ConsumerState<MusicPageTest> {
 
   MPDTalker mpdTalker = MPDTalker();
   bool isPlaying = false;
-  int currindex = 1;
+  late int currindex;
   String currSongTime = '0';
   late Timer timer;
+
+  late Mode mode;
   
 
 
@@ -35,14 +41,51 @@ class _MusicPageTestState extends ConsumerState<MusicPageTest> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(CurrentSongProvider.notifier).update(artist:widget.list[1]['Artist'].toString(), title:widget.list[1]['file'].toString(),
-     duration: convertToMin(widget.list[1]['duration'].toString()), time: '0');
+
+      ref.read(CurrentSongProvider.notifier).update(artist:widget.list[0]['Artist'].toString(), title:widget.list[0]['file'].toString(),
+     duration: convertToMin(widget.list[0]['Time'].toString()), time: '0');
+
+     //timer for progress bar
      
      timer = Timer.periodic(Duration(seconds: 1), (timer) async{
 
       Map info = await mpdTalker.cmdMap('status');
       ref.read(CurrentSongProvider.notifier).update(time: info['time']);
+
+      // int.parse(currSongTime).toDouble()/(int.parse(convertTosimpleStr(widget.list[currindex]['Time'']
+
+
+      if(int.parse(currSongTime) == int.parse(convertTosimpleStr(widget.list[currindex]['Time'].toString()))-1 && mode.isSingle == false){
+              
+
+              print('nextsong');
+              // mpdTalker.cmdStr('next');
+            ref.read(CurrentSongProvider.notifier).update(isPlaying: true);
+            
+                if(currindex == widget.list.length-1){
+                        currindex = 0;
+                        ref.read(currIndexProvider.notifier).update(currindex);
+                ref.read(CurrentSongProvider.notifier).update(artist:widget.list[currindex]['Artist'].toString(), title: widget.list[currindex]['file'].toString(),
+                 duration: convertToMin(widget.list[currindex]['Time'].toString(),));
+                }
+                else{
+                  currindex++;
+                  ref.read(currIndexProvider.notifier).update(currindex);
+
+
+                  ref.read(CurrentSongProvider.notifier).update(artist:widget.list[currindex]['Artist'].toString(), title: widget.list[currindex]['file'].toString(),
+                 duration: convertToMin(widget.list[currindex]['Time'].toString(),));
+                }
+                
+
+
+      }
+
+       
+
       
+
+            
 
 
       });
@@ -75,7 +118,7 @@ class _MusicPageTestState extends ConsumerState<MusicPageTest> {
     int num = int.parse(strforint);
     double min = num/60;
     double sec = num%60;
-    String ans = min.toInt().toString()+'min ' + sec.toInt().toString()+'sec';
+    String ans = min.toInt().toString()+':' + sec.toInt().toString();
     return ans;
 
   }
@@ -101,8 +144,12 @@ class _MusicPageTestState extends ConsumerState<MusicPageTest> {
   Widget build(BuildContext context) {
     isPlaying = ref.watch(CurrentSongProvider).isPlaying;
     currSongTime = ref.watch(CurrentSongProvider).time;
+    SizeConfig().init(context);
+
+    mode = ref.watch(Modeprovider);
+    currindex = ref.watch(currIndexProvider);
     
-    // print(widget.list);
+    
     
 
   
@@ -110,7 +157,6 @@ class _MusicPageTestState extends ConsumerState<MusicPageTest> {
 
 
    
-    print('hello');
     return Scaffold(
       
       body: Flex(
@@ -127,59 +173,108 @@ class _MusicPageTestState extends ConsumerState<MusicPageTest> {
               Flexible(
                 flex: 1,
                 child: Container(
-              height: 200,
-              width: 200,
-              child: Card(
-                elevation: 5,
+                  
+              height: SizeConfig.screenHeight*0.5,
+              width: SizeConfig.screenWidth*0.4,
+              // color: Colors.blueGrey,
+              decoration: BoxDecoration(
                 color: Colors.blueGrey,
-                child: ListTile(
-                  title: Text(ref.watch(CurrentSongProvider).title),
-                  subtitle: Text(ref.watch(CurrentSongProvider).artist),
-                  trailing: Text(ref.watch(CurrentSongProvider).duration),
+                borderRadius: BorderRadius.circular(10)),
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Flex(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  direction: Axis.vertical,
+                children: [
+                  Flexible(
+                    flex: 3,
+                    child: Image.asset('assets/music.png')),
+                  Flexible(
+                    flex: 1,
+                    child: Flex(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      direction: Axis.horizontal,
+                  children: [Flexible(
+                    flex: 3,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Text(ref.watch(CurrentSongProvider).title,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: SizeConfig.fontsize/2,
+                    
+                    
+                        ),),
+                    ),
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: Text(ref.watch(CurrentSongProvider).duration,
+                    style: TextStyle(color: Colors.white,fontSize: SizeConfig.fontsize*0.4),)),
+                  ],)),
+
+                  Flexible(
+                    flex: 1,
+                    child:ref.watch(CurrentSongProvider).artist == 'null' ? const Text("Artist: unknown") : Text('Artist: ${ref.watch(CurrentSongProvider).artist}',
+                    style: TextStyle(color: Colors.white,fontSize: SizeConfig.fontsize*0.4),),
+                    )
+                ],
                 ),
               ),
+              // child: Card(
+              //   elevation: 5,
+              //   color: Colors.blueGrey,
+              //   child: ListTile(
+              //     leading: Image.asset('assets/music.png'),
+              //     title: Text(ref.watch(CurrentSongProvider).title),
+              //     subtitle: Text(ref.watch(CurrentSongProvider).artist),
+              //     trailing: Text(ref.watch(CurrentSongProvider).duration),
+              //   ),
+              // ),
             ),),
             Flexible(flex : 1,
             child: Container(
-                height: 200,
-                width: 300,
+                height: SizeConfig.screenHeight*0.5,
+                width: SizeConfig.screenWidth*0.4,
                 child: ListView.builder(
+                  controller: ScrollController(),
                   scrollDirection: Axis.vertical,
                   itemCount: widget.list.length,
-                  itemBuilder: ((context, index) => ListTile(title: Text(widget.list[index]['file'].toString()),
-                  subtitle: Text(widget.list[index]['Artist'] == null ? '' : widget.list[index]['Artist'].toString()),
-                  trailing: Text(
-                    convertToMin(widget.list[index]['duration'].toString()),
-                  ),
-                  onTap: (){
+                  itemBuilder: ((context, index) => Card(
+                    color: Colors.blueGrey,
+                    shadowColor: Colors.blueAccent,
+                    elevation: 5,
 
-                    print(index);
-                    ref.read(CurrentSongProvider.notifier).update(artist:widget.list[index]['Artist'].toString(), title: widget.list[index]['file'].toString(),
-                 duration: convertToMin(widget.list[index]['duration'].toString(),) ,isPlaying: true,);
-            
-                    mpdTalker.cmdStr('playid ' +widget.list[index]['Id'].toString());
-            
-                    currindex = index;
-            
-                  },
+                    child: ListTile(
+                      minLeadingWidth: 4,
+                      textColor: Color.fromARGB(199, 255, 255, 255),
+                  
+                      title: Text(widget.list[index]['file'].toString()),
+                    subtitle: Text(widget.list[index]['Artist'] == null ? '' : widget.list[index]['Artist'].toString(),
+                    style: TextStyle(color: Colors.black),),
+                    trailing: Text(
+                      convertToMin(widget.list[index]['Time'].toString(),),
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    onTap: (){
+                  
+                      print(index);
+                      ref.read(CurrentSongProvider.notifier).update(artist:widget.list[index]['Artist'] == null ? "Unknown": widget.list[index]['Artist'].toString(),
+                       title: widget.list[index]['file'].toString(),
+                                   duration: convertToMin(widget.list[index]['Time'].toString(),) ,isPlaying: true,);
+                              
+                      mpdTalker.cmdStr('playid ' +widget.list[index]['Id'].toString());
+                              
+                      currindex = index;
+                  ref.read(currIndexProvider.notifier).update(currindex);
+                      
+                              
+                    },
+                    ),
                   ))),
               ),),
-              ElevatedButton(onPressed: () async{
-                 List mylist1 = await mpdTalker.cmdListMap('listall');
-                 String adddsong = mylist1[0]['file'];
-                 mpdTalker.cmdStr('add $adddsong');
-                 print(adddsong);
-                 print(mylist1);
-
-                //  List mylist = await mpdTalker.cmdListMap('list ');
-                //  print(mylist);
-
-
-                //  mpdTalker.cmd('find $adddsong');
-                
-                //  print(mylist);
-
-              }, child: Text('database info')),
+              
 
             ],
             )),
@@ -201,10 +296,14 @@ class _MusicPageTestState extends ConsumerState<MusicPageTest> {
                     flex: 6,
                     child: RotatedBox(
                       quarterTurns: 4,
-                      child: Slider(value: int.parse(currSongTime).toDouble()/(int.parse(convertTosimpleStr(widget.list[currindex]['duration'].toString())).toDouble()), 
+                      child: Slider(
+                        activeColor: Colors.blueGrey,
+                        // inactiveColor: Colors.blueAccent,
+                        thumbColor: Colors.transparent,
+                        value: int.parse(currSongTime).toDouble()/((int.parse(convertTosimpleStr(widget.list[currindex]['Time'].toString())).toDouble())), 
                       onChanged:(value){
                         print(value);
-                        double seekTime = value*int.parse(convertTosimpleStr(widget.list[currindex]['duration'].toString())).toDouble();
+                        double seekTime = value*int.parse(convertTosimpleStr(widget.list[currindex]['Time'].toString())).toDouble();
                         int seektime = seekTime.toInt();
                         print(seektime);
                           mpdTalker.cmd('seekcur $seektime');
@@ -216,42 +315,71 @@ class _MusicPageTestState extends ConsumerState<MusicPageTest> {
                   ),
                   Flexible(
                     flex: 1,
-                    child: Text(convertToMin(widget.list[currindex]['duration'].toString()))),
+                    child: Text(convertToMin(widget.list[currindex]['Time'].toString()))),
             
-                    Flexible(
-                      flex: 2,
-                      child: RotatedBox(
-                              quarterTurns: 4,
-                              child: Slider(value: ref.watch(VolumeProvider).toDouble()/100, onChanged: (Value){
-                                double vol = Value*100;
-                                int songVol = vol.toInt();
-                                mpdTalker.cmd('setvol $songVol');
-                                ref.read(VolumeProvider.notifier).update(songVol);
-                            
-                              }),
-                            ),
-                    )
+                   
                       ],
                     ),),
-                    Flexible( flex : 1, child:  Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                    Flex(
+                      direction: Axis.horizontal,
+
                       children: [
+                        Flexible(
+                          flex: 1,
+                          child: SizedBox(
+                          width: SizeConfig.screenWidth/3,
+                        )),
+                        Flexible(
+                           flex : 1, 
+                        child:  Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+
+                           Badge(
+                            badgeContent: mode.isSingle ? const Text('1') : null,
+                            elevation: 0,
+                            badgeColor:  Colors.greenAccent,
+                            child: IconButton(
+                              icon: const Icon(Icons.loop),
+                              color: Colors.greenAccent,
+                               onPressed: (() {
+                                if(mode.isSingle){
+                                  ref.read(Modeprovider.notifier).update(isSingle: false);
+                                  mpdTalker.cmd('single 0');
+                                }
+                                if(mode.isSingle == false ){
+                                        ref.read(Modeprovider.notifier).update(isSingle: true);
+                                  mpdTalker.cmd('single 1');
+                                  
+
+
+
+                                }
+                                
+
+                              
+                            }),),
+                           ),
+
+                            
               IconButton(onPressed: (){
                 // mpdTalker.cmdStr('previous');
                 mpdTalker.cmdStr('previous');
                 ref.read(CurrentSongProvider.notifier).update(isPlaying: true);
             
                 if(currindex == 0){
-                    currindex = widget.list.length-1;
+                        // currindex = widget.list.length-1;
+                        ref.read(currIndexProvider.notifier).update(widget.list.length-1);
             
-                    ref.read(CurrentSongProvider.notifier).update(artist:widget.list[currindex]['Artist'].toString(), title: widget.list[currindex]['file'].toString(),
-                 duration: convertToMin(widget.list[currindex]['duration'].toString(),));
+                        ref.read(CurrentSongProvider.notifier).update(artist:widget.list[currindex]['Artist'].toString(), title: widget.list[currindex]['file'].toString(),
+                 duration: convertToMin(widget.list[currindex]['Time'].toString(),));
                 }
                 else{
                   currindex--;
+                  ref.read(currIndexProvider.notifier).update(currindex);
                   ref.read(CurrentSongProvider.notifier).update(artist:widget.list[currindex]['Artist'].toString(), title: widget.list[currindex]['file'].toString(),
-                 duration: convertToMin(widget.list[currindex]['duration'].toString(),));
+                 duration: convertToMin(widget.list[currindex]['Time'].toString(),));
                 }
                 
                 
@@ -267,6 +395,8 @@ class _MusicPageTestState extends ConsumerState<MusicPageTest> {
                   mpdTalker.cmdStr('pause 0');
                 }
                 ref.read(CurrentSongProvider.notifier).update( isPlaying: !isPlaying);
+
+                
                 
             
             
@@ -279,22 +409,52 @@ class _MusicPageTestState extends ConsumerState<MusicPageTest> {
                 ref.read(CurrentSongProvider.notifier).update(isPlaying: true);
             
                 if(currindex == widget.list.length-1){
-                    currindex = 0;
-                ref.read(CurrentSongProvider.notifier).update(artist:widget.list[currindex]['Artist'].toString(), title: widget.list[currindex]['file'].toString(),
-                 duration: convertToMin(widget.list[currindex]['duration'].toString(),));
+                  ref.read(currIndexProvider.notifier).update(0);
+
+                        // currindex = 0;
+                ref.read(CurrentSongProvider.notifier).update(artist:widget.list[0]['Artist'].toString(), title: widget.list[0]['file'].toString(),
+                 duration: convertToMin(widget.list[0]['Time'].toString(),));
                 }
                 else{
                   currindex++;
+                  ref.read(currIndexProvider.notifier).update(currindex);
+
                   ref.read(CurrentSongProvider.notifier).update(artist:widget.list[currindex]['Artist'].toString(), title: widget.list[currindex]['file'].toString(),
-                 duration: convertToMin(widget.list[currindex]['duration'].toString(),));
+                 duration: convertToMin(widget.list[currindex]['Time'].toString(),));
                 }
                 
             
                 
             
               }, icon: Icon(Icons.skip_next)),
+             
+              
+                          ],
+                        ),),
+                        Flexible(
+                          flex: 1,
+                          child: Row(
+                            children: [
+                              Icon(Icons.volume_up),
+                              SizedBox(
+                                width: SizeConfig.screenWidth/4,
+                                child: RotatedBox(
+                                    quarterTurns: 4,
+                                    child: Slider(value: ref.watch(VolumeProvider).toDouble()/100, onChanged: (Value){
+                                      double vol = Value*100;
+                                      int songVol = vol.toInt();
+                                      mpdTalker.cmd('setvol $songVol');
+                                      ref.read(VolumeProvider.notifier).update(songVol);
+                                      
+                                    }),
+                                  ),
+                              ),
+                            ],
+                          ),
+
+                        )
                       ],
-                    ),),
+                    ),
                 ],
               ),
             ),

@@ -9,6 +9,7 @@ import 'package:musicplayer/main.dart';
 import 'package:musicplayer/musicPage.dart';
 import 'package:musicplayer/music_methods/controller.dart';
 import 'package:musicplayer/playlistLoading.dart';
+import 'package:musicplayer/socketProblem.dart';
 
 import 'music_methods/musicProvider.dart';
 
@@ -73,12 +74,7 @@ class _loadingPageState extends ConsumerState<loadingPage> {
                   if (snapshot.connectionState == ConnectionState.done) {
         // If we got an error
         if (snapshot.hasError) {
-          return Center(
-            child: Text(
-              '${snapshot.error} occurred',
-              style: TextStyle(fontSize: 18, color: Colors.black),
-            ),
-          );
+          return const SocketProblem();
            
           // if we got our data
         } else if (snapshot.hasData) {

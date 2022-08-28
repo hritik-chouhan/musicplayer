@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:musicplayer/musicPage.dart';
+import 'package:musicplayer/nomusic.dart';
 
 import 'music_methods/controller.dart';
 
@@ -62,6 +63,11 @@ class PlaylistLoading extends StatelessWidget {
         } else if (snapshot.hasData) {
           // Extracting data from snapshot object
           List<Map<String, String>> list = snapshot.data as dynamic;
+          mpdTalker.cmd('repeat 1');
+          mpdTalker.cmd('single 0');
+          mpdTalker.cmd('play');
+          mpdTalker.cmd('pause 1');
+          print(list);
           
           // list = await mpdTalker.cmdListMap('playlistinfo');
 
@@ -94,7 +100,7 @@ class PlaylistLoading extends StatelessWidget {
           
           
         } else if(snapshot.data == null){
-          return Text('no data');
+          return const NoMusicFound();
     
         }
         
