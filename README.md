@@ -1,16 +1,14 @@
 # musicplayer
 
-A new Flutter project.
+A Media Player app based on flutter for car dashboard.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Media player app is integrated with Media player daemon server.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Functions Included in Media Player:
+  -Current Playing Song Status
+  -Playlist
+  -play/pause/next/previous/loop buttons
+  -progress bar for current song.
+  -Each song info from the database.
