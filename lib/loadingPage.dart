@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:musicplayer/main.dart';
 import 'package:musicplayer/musicPage.dart';
 import 'package:musicplayer/music_methods/controller.dart';
+import 'package:musicplayer/nomusic.dart';
 import 'package:musicplayer/playlistLoading.dart';
 import 'package:musicplayer/socketProblem.dart';
 
@@ -80,7 +81,9 @@ class _loadingPageState extends ConsumerState<loadingPage> {
         } else if (snapshot.hasData) {
           // Extracting data from snapshot object
           List list = snapshot.data as dynamic;
-          mpdTalker.cmdStr('clear');
+          
+          if(list.isNotEmpty){
+            mpdTalker.cmdStr('clear');
           for(int i =0; i<list.length;i++){
 
             print(i);
@@ -97,6 +100,14 @@ class _loadingPageState extends ConsumerState<loadingPage> {
           
           return PlaylistLoading();
 
+
+          }
+          else{
+          return NoMusicFound();
+
+
+          }
+          
 //           SchedulerBinding.instance.addPostFrameCallback((_) {
 
 //   // add your code here.
@@ -122,7 +133,7 @@ class _loadingPageState extends ConsumerState<loadingPage> {
           
           
         } else if(snapshot.data == null){
-          return Text('no data');
+          return NoMusicFound();
     
         }
         

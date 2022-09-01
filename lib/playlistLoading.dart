@@ -63,7 +63,10 @@ class PlaylistLoading extends StatelessWidget {
         } else if (snapshot.hasData) {
           // Extracting data from snapshot object
           List<Map<String, String>> list = snapshot.data as dynamic;
-          mpdTalker.cmd('repeat 1');
+
+          if(list.isNotEmpty){
+
+            mpdTalker.cmd('repeat 1');
           mpdTalker.cmd('single 0');
           mpdTalker.cmd('play');
           mpdTalker.cmd('pause 1');
@@ -74,6 +77,14 @@ class PlaylistLoading extends StatelessWidget {
 
           
           return MusicPageTest(list : list,);
+
+          }
+          else{
+          return const NoMusicFound();
+
+          }
+
+          
 
 //           SchedulerBinding.instance.addPostFrameCallback((_) {
 
