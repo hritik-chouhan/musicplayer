@@ -68,11 +68,10 @@ class PlaylistLoading extends StatelessWidget {
 
             mpdTalker.cmd('repeat 1');
           mpdTalker.cmd('single 0');
+          mpdTalker.cmd('consume 0');
           mpdTalker.cmd('play');
           mpdTalker.cmd('pause 1');
-          print(list);
           
-          // list = await mpdTalker.cmdListMap('playlistinfo');
 
 
           
@@ -86,27 +85,7 @@ class PlaylistLoading extends StatelessWidget {
 
           
 
-//           SchedulerBinding.instance.addPostFrameCallback((_) {
 
-//   // add your code here.
-
-//   Navigator.push(
-//         context,
-//         new MaterialPageRoute(
-//             builder: (context) => MusicPage()));
-// });
-//               WidgetsBinding.instance.addPostFrameCallback((_){
-//                 Navigator.push(
-//             context,
-//             MaterialPageRoute(
-//               builder: (context) => MusicPage(),
-//             ),
-//           );
-
-
-//   // Add Your Code here.
-
-// });
           
           
           

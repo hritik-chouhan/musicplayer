@@ -1,18 +1,15 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:musicplayer/main.dart';
-import 'package:musicplayer/musicPage.dart';
+
+
 import 'package:musicplayer/music_methods/controller.dart';
 import 'package:musicplayer/nomusic.dart';
 import 'package:musicplayer/playlistLoading.dart';
 import 'package:musicplayer/socketProblem.dart';
 
-import 'music_methods/musicProvider.dart';
 
 class loadingPage extends ConsumerStatefulWidget {
   const loadingPage({Key? key}) : super(key: key);
@@ -28,9 +25,8 @@ class _loadingPageState extends ConsumerState<loadingPage> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-    //   ref.read(CurrentSongProvider.notifier).update(artist:list[1]['Artist'].toString(), title:list[1]['file'].toString(),
-    //  duration: convertToMin(list[1]['duration'].toString(),));
-    print('helloref');
+    
+    
     });
     
 
@@ -81,6 +77,7 @@ class _loadingPageState extends ConsumerState<loadingPage> {
         } else if (snapshot.hasData) {
           // Extracting data from snapshot object
           List list = snapshot.data as dynamic;
+          print(list);
           
           if(list.isNotEmpty){
             mpdTalker.cmdStr('clear');
@@ -93,9 +90,7 @@ class _loadingPageState extends ConsumerState<loadingPage> {
             mpdTalker.cmdStr('add "$addsong"');
 
           }
-          print(list);
-          // list = await mpdTalker.cmdListMap('playlistinfo');
-
+          
 
           
           return PlaylistLoading();
@@ -108,27 +103,7 @@ class _loadingPageState extends ConsumerState<loadingPage> {
 
           }
           
-//           SchedulerBinding.instance.addPostFrameCallback((_) {
 
-//   // add your code here.
-
-//   Navigator.push(
-//         context,
-//         new MaterialPageRoute(
-//             builder: (context) => MusicPage()));
-// });
-//               WidgetsBinding.instance.addPostFrameCallback((_){
-//                 Navigator.push(
-//             context,
-//             MaterialPageRoute(
-//               builder: (context) => MusicPage(),
-//             ),
-//           );
-
-
-//   // Add Your Code here.
-
-// });
           
           
           

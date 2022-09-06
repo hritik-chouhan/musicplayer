@@ -13,7 +13,7 @@ class NoMusicFound extends StatelessWidget {
           width: MediaQuery.of(context).size.width*0.5,
           color: Colors.white,
           child: const Center(
-            child: Text("N0 MUSIC FILE FOUND IN THE MUSIC DIRECTORY!!!!", style: TextStyle(
+            child: Text("NO MUSIC FILE FOUND IN THE MUSIC DIRECTORY!!!!", style: TextStyle(
                     fontSize: 30,
                     color: Colors.black,
 

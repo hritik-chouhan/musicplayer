@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:badges/badges.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:musicplayer/class.dart';
+
 import 'package:musicplayer/size.dart';
 
 import 'music_methods/controller.dart';
@@ -52,14 +52,14 @@ class _MusicPageTestState extends ConsumerState<MusicPageTest> {
       Map info = await mpdTalker.cmdMap('status');
       ref.read(CurrentSongProvider.notifier).update(time: info['time']);
 
-      // int.parse(currSongTime).toDouble()/(int.parse(convertTosimpleStr(widget.list[currindex]['Time'']
+     
 
 
       if(int.parse(currSongTime) == int.parse(convertTosimpleStr(widget.list[currindex]['Time'].toString()))-1 && mode.isSingle == false){
               
 
-              print('nextsong');
-              // mpdTalker.cmdStr('next');
+             
+              
             ref.read(CurrentSongProvider.notifier).update(isPlaying: true);
             
                 if(currindex == widget.list.length-1){
@@ -222,16 +222,7 @@ class _MusicPageTestState extends ConsumerState<MusicPageTest> {
                 ],
                 ),
               ),
-              // child: Card(
-              //   elevation: 5,
-              //   color: Colors.blueGrey,
-              //   child: ListTile(
-              //     leading: Image.asset('assets/music.png'),
-              //     title: Text(ref.watch(CurrentSongProvider).title),
-              //     subtitle: Text(ref.watch(CurrentSongProvider).artist),
-              //     trailing: Text(ref.watch(CurrentSongProvider).duration),
-              //   ),
-              // ),
+              
             ),),
             Flexible(flex : 1,
             child: Container(
@@ -298,7 +289,7 @@ class _MusicPageTestState extends ConsumerState<MusicPageTest> {
                       quarterTurns: 4,
                       child: Slider(
                         activeColor: Colors.blueGrey,
-                        // inactiveColor: Colors.blueAccent,
+                        
                         thumbColor: Colors.transparent,
                         value: int.parse(currSongTime).toDouble()/((int.parse(convertTosimpleStr(widget.list[currindex]['Time'].toString())).toDouble())), 
                       onChanged:(value){
@@ -364,13 +355,14 @@ class _MusicPageTestState extends ConsumerState<MusicPageTest> {
 
                             
               IconButton(onPressed: (){
-                // mpdTalker.cmdStr('previous');
+                
                 mpdTalker.cmdStr('previous');
                 ref.read(CurrentSongProvider.notifier).update(isPlaying: true);
             
                 if(currindex == 0){
-                        // currindex = widget.list.length-1;
+                        
                         ref.read(currIndexProvider.notifier).update(widget.list.length-1);
+                        currindex = widget.list.length-1;
             
                         ref.read(CurrentSongProvider.notifier).update(artist:widget.list[currindex]['Artist'].toString(), title: widget.list[currindex]['file'].toString(),
                  duration: convertToMin(widget.list[currindex]['Time'].toString(),));
@@ -411,7 +403,7 @@ class _MusicPageTestState extends ConsumerState<MusicPageTest> {
                 if(currindex == widget.list.length-1){
                   ref.read(currIndexProvider.notifier).update(0);
 
-                        // currindex = 0;
+                       
                 ref.read(CurrentSongProvider.notifier).update(artist:widget.list[0]['Artist'].toString(), title: widget.list[0]['file'].toString(),
                  duration: convertToMin(widget.list[0]['Time'].toString(),));
                 }

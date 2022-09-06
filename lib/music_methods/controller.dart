@@ -147,7 +147,7 @@ class MPDTalker {
 
     
     // Get the data as a String, then turn it into a List of Maps.
-    // cmdStr(cmd).then((String dataStr) {
+    
 
       String dataStr = await cmdStr(cmd);
       
@@ -170,9 +170,7 @@ class MPDTalker {
           }
         }
       }
-    // }
-    // );
-    // print('data $data');
+    
     return data;
 
   }
