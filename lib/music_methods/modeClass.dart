@@ -1,4 +1,4 @@
-
+// SPDX-License-Identifier: Apache-2.0
 class Mode{
   Mode({required this.isRepeat, required this.isSingle, required this.prev});
 

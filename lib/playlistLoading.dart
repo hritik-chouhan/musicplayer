@@ -1,4 +1,4 @@
-
+// SPDX-License-Identifier: Apache-2.0
 
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';

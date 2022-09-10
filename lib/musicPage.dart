@@ -1,4 +1,4 @@
-
+// SPDX-License-Identifier: Apache-2.0
 
 import 'dart:async';
 
@@ -250,7 +250,7 @@ class _MusicPageTestState extends ConsumerState<MusicPageTest> {
                     ),
                     onTap: (){
                   
-                      print(index);
+
                       ref.read(CurrentSongProvider.notifier).update(artist:widget.list[index]['Artist'] == null ? "Unknown": widget.list[index]['Artist'].toString(),
                        title: widget.list[index]['file'].toString(),
                                    duration: convertToMin(widget.list[index]['Time'].toString(),) ,isPlaying: true,);
@@ -293,10 +293,8 @@ class _MusicPageTestState extends ConsumerState<MusicPageTest> {
                         thumbColor: Colors.transparent,
                         value: int.parse(currSongTime).toDouble()/((int.parse(convertTosimpleStr(widget.list[currindex]['Time'].toString())).toDouble())), 
                       onChanged:(value){
-                        print(value);
                         double seekTime = value*int.parse(convertTosimpleStr(widget.list[currindex]['Time'].toString())).toDouble();
                         int seektime = seekTime.toInt();
-                        print(seektime);
                           mpdTalker.cmd('seekcur $seektime');
                       },
                       max: 1,
