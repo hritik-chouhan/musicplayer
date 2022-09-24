@@ -15,9 +15,9 @@ To run this app, we need Flutter SDK, MPD server.
 
 - Go to the project directory
 
-- First run flutter create .
+- First run "flutter create .".
 
-- Then to run the app flutter run
+- Then to run the app "flutter run".
 
 
 
